@@ -1,6 +1,6 @@
 import CanvasOption from "./js/CanvasOption.js";
 import Particle from "./js/Particle.js";
-import { randomNumBetween } from "./js/utils.js";
+import { hypotenuse, randomNumBetween } from "./js/utils.js";
 
 class Canvas extends CanvasOption {
     constructor() {
@@ -22,14 +22,18 @@ class Canvas extends CanvasOption {
     }
 
     createParticles() {
-        const PARTICLE_NUM = 1000;
+        const PARTICLE_NUM = 400;
         const x = randomNumBetween(0, this.canvasWidth);
         const y = randomNumBetween(0, this.canvasHeight);
 
         for (let i = 0; i < PARTICLE_NUM; i++) {
-            const vx = randomNumBetween(-5, 5);
-            const vy = randomNumBetween(-5, 5);
-            this.particles.push(new Particle(x, y, vx, vy));
+            const r = randomNumBetween(2, 100) * hypotenuse(innerHeight, innerWidth) * 0.0001;
+            const angle = (Math.PI / 180) * randomNumBetween(0, 360);
+            const vx = r * Math.cos(angle);
+            const vy = r * Math.sin(angle);
+            const opacity = randomNumBetween(0.6, 0.9);
+
+            this.particles.push(new Particle(x, y, vx, vy, opacity));
         }
     }
 
@@ -43,7 +47,7 @@ class Canvas extends CanvasOption {
             delta = now - then;
             if (delta < this.interval) return;
 
-            this.ctx.fillStyle = this.bgColor;
+            this.ctx.fillStyle = this.bgColor + "40";
             this.ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
 
             this.particles.forEach((particle, index) => {
